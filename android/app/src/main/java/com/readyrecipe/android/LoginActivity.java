@@ -62,7 +62,10 @@ public class LoginActivity extends AppCompatActivity {
             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                 progressDialog.dismiss();
                 if (response.isSuccessful() && response.body() != null && response.body().getToken() != null) {
-                    sharedPreferences.edit().putString("jwt", response.body().getToken()).apply();
+                    sharedPreferences.edit()
+                            .putString("jwt", response.body().getToken())
+                            .putString("userId", response.body().getUserId())
+                            .apply();
                     Intent intent = new Intent(LoginActivity.this, AppActivity.class);
                     startActivity(intent);
                     finish();
