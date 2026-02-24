@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="card_background">#FAF9F6</color>
+    <color name="heading_primary">#1B5E20</color>
+    <color name="heading_secondary">#4CAF50</color>
+    <color name="button_cta">#E65100</color>
+    <color name="text_body">#3E2723</color>
+    <color name="background_overlay">#4D000000</color>
+    <color name="white">#FFFFFFFF</color>
+</resources>

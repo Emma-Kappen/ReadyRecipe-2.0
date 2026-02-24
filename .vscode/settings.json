@@ -1,0 +1,10 @@
+{
+    "java.compile.nullAnalysis.mode": "automatic",
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "chat.tools.terminal.autoApprove": {
+        "/^cd 'c:\\\\Users\\\\emkap\\\\Documents\\\\Projects\\\\ReadyRecipe\\\\backend'; & '\\.\\\\gradlew\\.bat' bootRun @\\('--args=--spring\\.profiles\\.active=nodb'\\)$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
+    }
+}
