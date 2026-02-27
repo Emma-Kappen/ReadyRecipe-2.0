@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/inputGroceryName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Item name"
+        android:inputType="textPersonName" />
+
+    <EditText
+        android:id="@+id/inputGroceryQuantity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Quantity"
+        android:layout_marginTop="8dp"
+        android:inputType="numberDecimal" />
+
+    <EditText
+        android:id="@+id/inputGroceryUnit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Unit (e.g., pcs, kg)"
+        android:layout_marginTop="8dp" />
+
+    <EditText
+        android:id="@+id/inputGroceryPriority"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Priority (high/low)"
+        android:layout_marginTop="8dp" />
+
+</LinearLayout>

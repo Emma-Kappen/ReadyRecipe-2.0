@@ -32,7 +32,7 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     private void loadDashboardStats(String userId) {
-        ApiService apiService = ApiClient.getClient().create(ApiService.class);
+        ApiService apiService = ApiClient.getClient(getApplicationContext()).create(ApiService.class);
         Call<DashboardStatsDTO> call = apiService.getPantryStats(userId);
         call.enqueue(new Callback<DashboardStatsDTO>() {
             @Override

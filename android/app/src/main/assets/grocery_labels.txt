@@ -1,0 +1,24 @@
+apple
+banana
+orange
+lemon
+strawberry
+carrot
+broccoli
+cucumber
+tomato
+pepper
+onion
+bottle
+cup
+bowl
+wine glass
+dish
+plate
+food
+hot dog
+pizza
+sandwich
+cake
+donut
+bread

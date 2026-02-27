@@ -42,7 +42,7 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     private void signUp(String email, String password) {
-        ApiService apiService = ApiClient.getClient().create(ApiService.class);
+        ApiService apiService = ApiClient.getClient(getApplicationContext()).create(ApiService.class);
         SignUpRequest request = new SignUpRequest(email, password);
         Call<LoginResponse> call = apiService.signUp(request);
         call.enqueue(new Callback<LoginResponse>() {

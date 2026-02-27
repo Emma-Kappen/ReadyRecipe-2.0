@@ -57,7 +57,7 @@ public class RecipesActivity extends AppCompatActivity {
     }
 
     private void loadRecipes(String cuisine) {
-        ApiService apiService = ApiClient.getClient().create(ApiService.class);
+        ApiService apiService = ApiClient.getClient(getApplicationContext()).create(ApiService.class);
         Call<List<Recipe>> call = (cuisine != null) 
             ? apiService.getRecipesByCuisine(cuisine)
             : apiService.getRecipes();

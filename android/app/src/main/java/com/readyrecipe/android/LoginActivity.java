@@ -12,6 +12,7 @@ import com.readyrecipe.android.models.LoginRequest;
 import com.readyrecipe.android.models.LoginResponse;
 import com.readyrecipe.android.network.ApiClient;
 import com.readyrecipe.android.network.ApiService;
+import com.readyrecipe.android.BottomNavigationActivity;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -54,7 +55,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void authenticate(String email, String password) {
-        ApiService apiService = ApiClient.getClient().create(ApiService.class);
+        ApiService apiService = ApiClient.getClient(getApplicationContext()).create(ApiService.class);
         LoginRequest request = new LoginRequest(email, password);
         Call<LoginResponse> call = apiService.login(request);
         call.enqueue(new Callback<LoginResponse>() {
@@ -66,18 +67,28 @@ public class LoginActivity extends AppCompatActivity {
                             .putString("jwt", response.body().getToken())
                             .putString("userId", response.body().getUserId())
                             .apply();
-                    Intent intent = new Intent(LoginActivity.this, AppActivity.class);
+                    Intent intent = new Intent(LoginActivity.this, BottomNavigationActivity.class);
                     startActivity(intent);
                     finish();
                 } else {
-                    Toast.makeText(LoginActivity.this, "Invalid credentials", Toast.LENGTH_SHORT).show();
+                    String msg = "Invalid credentials";
+                    try {
+                        if (response.errorBody() != null) {
+                            msg = response.errorBody().string();
+                        }
+                    } catch (Exception ignored) {}
+                    Toast.makeText(LoginActivity.this, msg, Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
             public void onFailure(Call<LoginResponse> call, Throwable t) {
                 progressDialog.dismiss();
-                Toast.makeText(LoginActivity.this, "Invalid credentials", Toast.LENGTH_SHORT).show();
+                String message = "Request failed: " + t.getMessage();
+                if (t instanceof java.net.ConnectException || t instanceof java.net.UnknownHostException) {
+                    message = "Cannot reach backend. Start it at " + BuildConfig.BASE_URL;
+                }
+                Toast.makeText(LoginActivity.this, message, Toast.LENGTH_LONG).show();
             }
         });
     }

@@ -12,6 +12,7 @@ public class PantryItem {
     private String category;
     private String expiryDate; // ISO 8601 date string
     private String dateAdded;
+    private boolean approved;
 
     public PantryItem() {}
 
@@ -24,6 +25,11 @@ public class PantryItem {
         this.category = category;
         this.expiryDate = expiryDate;
         this.dateAdded = dateAdded;
+    }
+
+    public PantryItem(UUID id, UUID userId, String itemName, BigDecimal quantity, String unit, String category, String expiryDate, String dateAdded, boolean approved) {
+        this(id, userId, itemName, quantity, unit, category, expiryDate, dateAdded);
+        this.approved = approved;
     }
 
     public UUID getId() { return id; }
@@ -49,4 +55,7 @@ public class PantryItem {
 
     public String getDateAdded() { return dateAdded; }
     public void setDateAdded(String dateAdded) { this.dateAdded = dateAdded; }
+
+    public boolean isApproved() { return approved; }
+    public void setApproved(boolean approved) { this.approved = approved; }
 }

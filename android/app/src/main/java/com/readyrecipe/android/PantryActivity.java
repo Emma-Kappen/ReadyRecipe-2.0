@@ -1,7 +1,9 @@
 package com.readyrecipe.android;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -32,6 +34,15 @@ public class PantryActivity extends AppCompatActivity {
         pantryAdapter = new PantryAdapter();
         recyclerViewPantry.setAdapter(pantryAdapter);
 
+        // Add Detect button
+        Button detectButton = findViewById(R.id.detectButton);
+        if (detectButton != null) {
+            detectButton.setOnClickListener(v -> {
+                Intent intent = new Intent(PantryActivity.this, PantryPhotoActivity.class);
+                startActivity(intent);
+            });
+        }
+
         String userId = sharedPreferences.getString("userId", "");
         if (userId.isEmpty()) {
             Toast.makeText(this, "User ID not found. Please log in again.", Toast.LENGTH_SHORT).show();
@@ -42,7 +53,7 @@ public class PantryActivity extends AppCompatActivity {
     }
 
     private void loadPantryItems(String userId) {
-        ApiService apiService = ApiClient.getClient().create(ApiService.class);
+        ApiService apiService = ApiClient.getClient(getApplicationContext()).create(ApiService.class);
         Call<List<PantryItem>> call = apiService.getPantryItems(userId);
         call.enqueue(new Callback<List<PantryItem>>() {
             @Override
