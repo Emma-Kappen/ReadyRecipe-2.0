@@ -7,15 +7,9 @@ plugins {
 group = "com.readyrecipe"
 version = "0.0.1-SNAPSHOT"
 description = "ReadyRecipe 2.0"
-/*
+
 java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(21))  // Change from 17 to 21
-    }
-}
-*/
-java {
-    sourceCompatibility = JavaVersion.VERSION_17  // Use your JDK 34
+	sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
 }
 

@@ -22,19 +22,23 @@ android {
         buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-        ndk {
-            abiFilters += "arm64-v8a"
-            abiFilters += "armeabi-v7a"
-        }
     }
 
     buildTypes {
         debug {
-            // Keep debug settings here if needed.
+            ndk {
+                abiFilters += "x86"
+                abiFilters += "x86_64"
+                abiFilters += "arm64-v8a"
+                abiFilters += "armeabi-v7a"
+            }
         }
         release {
             isMinifyEnabled = false
+            ndk {
+                abiFilters += "arm64-v8a"
+                abiFilters += "armeabi-v7a"
+            }
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
