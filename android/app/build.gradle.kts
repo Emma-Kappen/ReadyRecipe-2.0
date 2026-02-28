@@ -95,6 +95,8 @@ dependencies {
     implementation(libs.androidx.recyclerview)
     implementation(libs.androidx.swiperefreshlayout)
     implementation(libs.androidx.cardview)
+    implementation("androidx.navigation:navigation-fragment-ktx:2.9.7")
+    implementation("androidx.navigation:navigation-ui-ktx:2.9.7")
 
     // TensorFlow Lite (Object Detection) - Updated for 16KB page size support
     implementation(libs.tensorflow.lite)
