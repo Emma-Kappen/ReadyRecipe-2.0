@@ -19,6 +19,7 @@ import com.readyrecipe.backend.dto.DashboardStatsDTO;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
+import java.util.ArrayList;
 import java.time.temporal.ChronoUnit;
 
 @RestController
@@ -28,6 +29,41 @@ public class PantryController {
     
     @Autowired
     private PantryRepository pantryRepository;
+
+    @PostMapping("")
+    public ResponseEntity<PantryItem> addPantryItem(@RequestBody PantryItem item) {
+        PantryItem saved = mapAndSavePantryItem(item);
+        return ResponseEntity.ok(saved);
+    }
+
+    @PostMapping("/bulk")
+    public ResponseEntity<List<PantryItem>> addPantryItems(@RequestBody List<PantryItemDTO> items) {
+        List<PantryItem> savedItems = new ArrayList<>();
+        if (items != null) {
+            for (PantryItemDTO item : items) {
+                if (item == null || item.getName() == null || item.getName().isBlank()) {
+                    continue;
+                }
+                PantryItem mapped = new PantryItem();
+                mapped.setItemName(item.getName().trim());
+                mapped.setQuantity(item.getQuantity());
+                mapped.setUnit(item.getUnit());
+                mapped.setCategory(item.getCategory());
+                if (item.getExpiryDate() != null && !item.getExpiryDate().isEmpty()) {
+                    try {
+                        mapped.setExpiryDate(LocalDate.parse(item.getExpiryDate()));
+                    } catch (Exception ignored) {}
+                }
+                if (item.getUserId() != null && !item.getUserId().isEmpty()) {
+                    try {
+                        mapped.setUserId(UUID.fromString(item.getUserId()));
+                    } catch (Exception ignored) {}
+                }
+                savedItems.add(mapAndSavePantryItem(mapped));
+            }
+        }
+        return ResponseEntity.ok(savedItems);
+    }
     
     @PostMapping("/add")
     public ResponseEntity<String> addItem(@RequestBody PantryItemDTO item) {
@@ -46,6 +82,33 @@ public class PantryController {
         }
         pantryRepository.save(entity);
         return ResponseEntity.ok("Item added: " + item.getName());
+    }
+
+    private PantryItem mapAndSavePantryItem(PantryItem item) {
+        PantryItem entity = new PantryItem();
+        if (item != null) {
+            entity.setUserId(item.getUserId());
+            entity.setItemName(item.getItemName());
+            entity.setQuantity(item.getQuantity());
+            entity.setUnit(item.getUnit());
+            entity.setCategory(item.getCategory());
+            if (item.getExpiryDate() != null) {
+                entity.setExpiryDate(item.getExpiryDate());
+            }
+        }
+        if (entity.getItemName() == null || entity.getItemName().isBlank()) {
+            entity.setItemName("Unknown Item");
+        }
+        if (entity.getQuantity() == null) {
+            entity.setQuantity(java.math.BigDecimal.ONE);
+        }
+        if (entity.getUnit() == null || entity.getUnit().isBlank()) {
+            entity.setUnit("unit");
+        }
+        if (entity.getCategory() == null || entity.getCategory().isBlank()) {
+            entity.setCategory("grocery");
+        }
+        return pantryRepository.save(entity);
     }
 
     @GetMapping("")
