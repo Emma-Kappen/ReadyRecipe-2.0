@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/topAppBarRoot"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/app_bar_height"
+    android:background="@color/earth_dark_brown"
+    android:elevation="3dp"
+    android:paddingStart="@dimen/space_8"
+    android:paddingEnd="@dimen/space_8">
+
+    <ImageButton
+        android:id="@+id/topBarMenu"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@android:color/transparent"
+        android:contentDescription="Menu"
+        android:padding="@dimen/space_8"
+        android:src="@android:drawable/ic_menu_sort_by_size"
+        app:tint="@color/earth_cream"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/topBarTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
+        android:text="ReadyRecipe"
+        android:textColor="@color/earth_cream"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/topBarActions"
+        app:layout_constraintStart_toEndOf="@id/topBarMenu"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/topBarActions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/topBarProfile"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="Profile"
+            android:padding="@dimen/space_8"
+            android:src="@android:drawable/ic_menu_myplaces"
+            app:tint="@color/earth_cream" />
+
+        <ImageButton
+            android:id="@+id/topBarSettings"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="Settings"
+            android:padding="@dimen/space_8"
+            android:src="@android:drawable/ic_menu_manage"
+            app:tint="@color/earth_cream" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

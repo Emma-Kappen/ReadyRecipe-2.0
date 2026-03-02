@@ -11,8 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.ItemTouchHelper;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -54,12 +53,31 @@ public class PantryFragment extends Fragment {
         progress = root.findViewById(R.id.pantryLoading);
         FloatingActionButton fabAdd = root.findViewById(R.id.pantryFabAdd);
         View btnOpenCamera = root.findViewById(R.id.btnOpenCamera);
+        View topBarTitle = root.findViewById(R.id.topBarTitle);
 
-        adapter = new PantryAdapter();
-        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        if (topBarTitle instanceof android.widget.TextView) {
+            ((android.widget.TextView) topBarTitle).setText("Pantry");
+        }
+
+        adapter = new PantryAdapter(new PantryAdapter.OnPantryItemActionListener() {
+            @Override
+            public void onEdit(PantryItem item) {
+                if (item != null) {
+                    showEditDialog(item);
+                }
+            }
+
+            @Override
+            public void onLongPress(PantryItem item, int position) {
+                if (item != null) {
+                    showItemActionsDialog(item, position);
+                }
+            }
+        });
+        int spacing = getResources().getDimensionPixelSize(R.dimen.space_8);
+        recyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 2));
+        recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, spacing, true));
         recyclerView.setAdapter(adapter);
-
-        attachSwipeToDelete(recyclerView);
 
         refreshLayout.setOnRefreshListener(this::loadPantryItems);
         fabAdd.setOnClickListener(v -> showAddDialog());
@@ -71,27 +89,6 @@ public class PantryFragment extends Fragment {
 
         loadPantryItems();
         return root;
-    }
-
-    private void attachSwipeToDelete(RecyclerView recyclerView) {
-        ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-            @Override
-            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-                return false;
-            }
-
-            @Override
-            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                int position = viewHolder.getAdapterPosition();
-                PantryItem item = adapter.getItem(position);
-                if (item != null && item.getId() != null) {
-                    deletePantryItem(item, position);
-                } else {
-                    adapter.removeAt(position);
-                }
-            }
-        };
-        new ItemTouchHelper(simpleCallback).attachToRecyclerView(recyclerView);
     }
 
     private void loadPantryItems() {
@@ -202,6 +199,90 @@ public class PantryFragment extends Fragment {
             public void onFailure(Call<Void> call, Throwable t) {
                 Toast.makeText(requireContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                 adapter.notifyItemChanged(position);
+            }
+        });
+    }
+
+    private void showItemActionsDialog(PantryItem item, int position) {
+        String[] options = new String[]{"Edit", "Delete"};
+        new AlertDialog.Builder(requireContext())
+                .setTitle(item.getItemName())
+                .setItems(options, (dialog, which) -> {
+                    if (which == 0) {
+                        showEditDialog(item);
+                    } else if (item.getId() != null) {
+                        deletePantryItem(item, position);
+                    }
+                })
+                .show();
+    }
+
+    private void showEditDialog(PantryItem sourceItem) {
+        View dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_add_pantry, null, false);
+        EditText nameInput = dialogView.findViewById(R.id.inputName);
+        EditText qtyInput = dialogView.findViewById(R.id.inputQuantity);
+        EditText unitInput = dialogView.findViewById(R.id.inputUnit);
+        EditText categoryInput = dialogView.findViewById(R.id.inputCategory);
+
+        qtyInput.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+        nameInput.setText(sourceItem.getItemName());
+        if (sourceItem.getQuantity() != null) {
+            qtyInput.setText(sourceItem.getQuantity().stripTrailingZeros().toPlainString());
+        }
+        unitInput.setText(sourceItem.getUnit());
+        categoryInput.setText(sourceItem.getCategory());
+
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Edit Pantry Item")
+                .setView(dialogView)
+                .setPositiveButton("Save", (dialog, which) -> {
+                    String name = nameInput.getText().toString().trim();
+                    String qtyText = qtyInput.getText().toString().trim();
+                    String unit = unitInput.getText().toString().trim();
+                    String category = categoryInput.getText().toString().trim();
+
+                    if (name.isEmpty()) {
+                        Toast.makeText(requireContext(), "Name required", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    PantryItem updated = new PantryItem();
+                    updated.setId(sourceItem.getId());
+                    updated.setUserId(sourceItem.getUserId());
+                    updated.setItemName(name);
+                    updated.setQuantity(qtyText.isEmpty() ? BigDecimal.ONE : new BigDecimal(qtyText));
+                    updated.setUnit(unit.isEmpty() ? "unit" : unit);
+                    updated.setCategory(category.isEmpty() ? "misc" : category);
+                    updated.setExpiryDate(sourceItem.getExpiryDate());
+                    updated.setDateAdded(sourceItem.getDateAdded());
+                    updated.setApproved(sourceItem.isApproved());
+
+                    updatePantryItem(updated);
+                })
+                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
+                .show();
+    }
+
+    private void updatePantryItem(PantryItem item) {
+        if (item.getId() == null) {
+            Toast.makeText(requireContext(), "Unable to update item", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Call<PantryItem> call = apiService.updatePantryItem(item.getId().toString(), item);
+        call.enqueue(new Callback<PantryItem>() {
+            @Override
+            public void onResponse(Call<PantryItem> call, Response<PantryItem> response) {
+                if (response.isSuccessful()) {
+                    loadPantryItems();
+                    Toast.makeText(requireContext(), "Pantry item updated", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(requireContext(), "Update failed", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PantryItem> call, Throwable t) {
+                Toast.makeText(requireContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -1,7 +1,9 @@
 package com.readyrecipe.android.adapters;
 
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,9 +15,21 @@ import java.util.List;
 import java.util.Locale;
 
 public class PantryAdapter extends RecyclerView.Adapter<PantryAdapter.PantryViewHolder> {
-    private List<PantryItem> items = new ArrayList<>();
+    public interface OnPantryItemActionListener {
+        void onEdit(PantryItem item);
+        void onLongPress(PantryItem item, int position);
+    }
 
-    public PantryAdapter() {}
+    private List<PantryItem> items = new ArrayList<>();
+    private final OnPantryItemActionListener actionListener;
+
+    public PantryAdapter() {
+        this(null);
+    }
+
+    public PantryAdapter(OnPantryItemActionListener actionListener) {
+        this.actionListener = actionListener;
+    }
 
     public void setItems(List<PantryItem> items) {
         this.items = items != null ? items : new ArrayList<>();
@@ -49,6 +63,8 @@ public class PantryAdapter extends RecyclerView.Adapter<PantryAdapter.PantryView
     @Override
     public void onBindViewHolder(@NonNull PantryViewHolder holder, int position) {
         PantryItem item = items.get(position);
+        ensureSquareCard(holder.itemView);
+
         holder.name.setText(item.getItemName());
 
         String qtyText = "";
@@ -62,12 +78,46 @@ public class PantryAdapter extends RecyclerView.Adapter<PantryAdapter.PantryView
         holder.quantity.setText(qtyText.trim());
 
         String meta = item.getCategory() != null ? item.getCategory() : "";
-        holder.meta.setText(meta);
+        holder.meta.setText(String.format(Locale.getDefault(), "Category: %s", meta));
 
         String expiryText = item.getExpiryDate() != null && !item.getExpiryDate().isEmpty()
                 ? String.format(Locale.getDefault(), "Expires: %s", item.getExpiryDate())
                 : "Expiry: auto";
         holder.expiry.setText(expiryText);
+
+        holder.editButton.setOnClickListener(v -> {
+            if (actionListener != null) {
+                actionListener.onEdit(item);
+            }
+        });
+
+        holder.itemView.setOnClickListener(v -> {
+            if (actionListener != null) {
+                actionListener.onEdit(item);
+            }
+        });
+
+        holder.itemView.setOnLongClickListener(v -> {
+            if (actionListener != null) {
+                int adapterPosition = holder.getBindingAdapterPosition();
+                if (adapterPosition != RecyclerView.NO_POSITION) {
+                    actionListener.onLongPress(item, adapterPosition);
+                    return true;
+                }
+            }
+            return false;
+        });
+    }
+
+    private void ensureSquareCard(View itemView) {
+        itemView.post(() -> {
+            ViewGroup.LayoutParams params = itemView.getLayoutParams();
+            int width = itemView.getWidth();
+            if (params != null && width > 0 && params.height != width) {
+                params.height = width;
+                itemView.setLayoutParams(params);
+            }
+        });
     }
 
     @Override
@@ -80,6 +130,7 @@ public class PantryAdapter extends RecyclerView.Adapter<PantryAdapter.PantryView
         TextView quantity;
         TextView meta;
         TextView expiry;
+        ImageButton editButton;
 
         public PantryViewHolder(@NonNull android.view.View itemView) {
             super(itemView);
@@ -87,6 +138,7 @@ public class PantryAdapter extends RecyclerView.Adapter<PantryAdapter.PantryView
             quantity = itemView.findViewById(R.id.tvQuantity);
             meta = itemView.findViewById(R.id.tvMeta);
             expiry = itemView.findViewById(R.id.tvExpiry);
+            editButton = itemView.findViewById(R.id.btnEditPantry);
         }
     }
 }

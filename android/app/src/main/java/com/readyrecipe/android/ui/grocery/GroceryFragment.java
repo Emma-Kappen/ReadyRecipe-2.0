@@ -19,6 +19,7 @@ import com.readyrecipe.android.models.PantryItem;
 import com.readyrecipe.android.network.ApiClient;
 import com.readyrecipe.android.network.ApiService;
 import com.readyrecipe.android.network.SessionManager;
+import java.util.ArrayList;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Locale;
@@ -72,6 +73,9 @@ public class GroceryFragment extends Fragment {
             public void onResponse(Call<List<GroceryItem>> call, Response<List<GroceryItem>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     adapter.setItems(response.body());
+                } else if (response.code() == 404) {
+                    Toast.makeText(requireContext(), "Endpoint pending", Toast.LENGTH_SHORT).show();
+                    adapter.setItems(buildMockGroceryItems(userId));
                 } else {
                     Toast.makeText(requireContext(), "Failed to load grocery list", Toast.LENGTH_SHORT).show();
                 }
@@ -131,6 +135,18 @@ public class GroceryFragment extends Fragment {
                 if (response.isSuccessful() && response.body() != null) {
                     adapter.addItem(response.body());
                     Toast.makeText(requireContext(), "Added to grocery list", Toast.LENGTH_SHORT).show();
+                } else if (response.code() == 404) {
+                    Toast.makeText(requireContext(), "Endpoint pending", Toast.LENGTH_SHORT).show();
+                    GroceryItem mockItem = new GroceryItem();
+                    mockItem.setId(UUID.randomUUID());
+                    mockItem.setUserId(item.getUserId());
+                    mockItem.setName(item.getName());
+                    mockItem.setQuantity(item.getQuantity());
+                    mockItem.setUnit(item.getUnit());
+                    mockItem.setCategory(item.getCategory());
+                    mockItem.setPriority(item.getPriority());
+                    mockItem.setChecked(false);
+                    adapter.addItem(mockItem);
                 } else {
                     Toast.makeText(requireContext(), "Save failed", Toast.LENGTH_SHORT).show();
                 }
@@ -150,6 +166,11 @@ public class GroceryFragment extends Fragment {
             @Override
             public void onResponse(Call<GroceryItem> call, Response<GroceryItem> response) {
                 if (response.isSuccessful()) {
+                    if (isChecked) {
+                        addToPantry(item);
+                    }
+                } else if (response.code() == 404) {
+                    Toast.makeText(requireContext(), "Endpoint pending", Toast.LENGTH_SHORT).show();
                     if (isChecked) {
                         addToPantry(item);
                     }
@@ -206,6 +227,9 @@ public class GroceryFragment extends Fragment {
                 if (response.isSuccessful() && response.body() != null) {
                     adapter.setItems(response.body());
                     Toast.makeText(requireContext(), "Generated list", Toast.LENGTH_SHORT).show();
+                } else if (response.code() == 404) {
+                    Toast.makeText(requireContext(), "Endpoint pending", Toast.LENGTH_SHORT).show();
+                    adapter.setItems(buildMockGroceryItems(userId));
                 } else {
                     Toast.makeText(requireContext(), "Generate failed", Toast.LENGTH_SHORT).show();
                 }
@@ -231,5 +255,39 @@ public class GroceryFragment extends Fragment {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_YEAR, days);
         return new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(calendar.getTime());
+    }
+
+    private List<GroceryItem> buildMockGroceryItems(String userId) {
+        List<GroceryItem> mockItems = new ArrayList<>();
+        UUID uid = null;
+        try {
+            if (userId != null) {
+                uid = UUID.fromString(userId);
+            }
+        } catch (Exception ignored) {}
+
+        GroceryItem milk = new GroceryItem();
+        milk.setId(UUID.randomUUID());
+        milk.setUserId(uid);
+        milk.setName("Milk");
+        milk.setQuantity(BigDecimal.ONE);
+        milk.setUnit("pack");
+        milk.setCategory("dairy");
+        milk.setPriority("normal");
+        milk.setChecked(false);
+
+        GroceryItem tomato = new GroceryItem();
+        tomato.setId(UUID.randomUUID());
+        tomato.setUserId(uid);
+        tomato.setName("Tomato");
+        tomato.setQuantity(BigDecimal.valueOf(4));
+        tomato.setUnit("unit");
+        tomato.setCategory("vegetable");
+        tomato.setPriority("high");
+        tomato.setChecked(false);
+
+        mockItems.add(milk);
+        mockItems.add(tomato);
+        return mockItems;
     }
 }

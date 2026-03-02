@@ -1,45 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/Widget.ReadyRecipe.Card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    app:cardCornerRadius="10dp"
-    app:cardElevation="6dp">
+    android:layout_marginBottom="@dimen/space_8">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="12dp">
+        android:padding="@dimen/space_12">
 
         <TextView
             android:id="@+id/tvRecipeTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="Recipe name"
+            android:textColor="@color/earth_dark_brown"
             android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="@color/heading_primary"
-            android:text="Recipe name" />
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tvRecipeMeta"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:textColor="@color/text_body"
-            android:text="Cuisine • 20 min" />
+            android:layout_marginTop="@dimen/space_4"
+            android:text="Cuisine • 20 min"
+            android:textColor="@color/earth_muted_brown"
+            android:textSize="13sp" />
 
         <Button
             android:id="@+id/btnCook"
+            style="@style/Widget.ReadyRecipe.Button.Primary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Cook this"
             android:layout_gravity="end"
-            android:background="@color/button_cta"
-            android:textColor="@color/white"
-            android:layout_marginTop="8dp" />
+            android:layout_marginTop="@dimen/space_8"
+            android:text="Cook This" />
 
     </LinearLayout>
 
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>

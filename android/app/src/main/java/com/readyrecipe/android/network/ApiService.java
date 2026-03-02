@@ -61,7 +61,7 @@ public interface ApiService {
     @POST("/api/grocery")
     Call<GroceryItem> addGroceryItem(@Body GroceryItem item);
 
-    @PATCH("/api/grocery/{id}")
+    @PATCH("/api/grocery/{id}/checkoff")
     Call<GroceryItem> updateGroceryItem(@Path("id") String id, @Body GroceryItem item);
 
     @POST("/api/grocery/generate")

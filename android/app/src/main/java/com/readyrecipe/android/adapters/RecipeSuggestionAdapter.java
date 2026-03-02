@@ -41,7 +41,10 @@ public class RecipeSuggestionAdapter extends RecyclerView.Adapter<RecipeSuggesti
     public void onBindViewHolder(@NonNull RecipeViewHolder holder, int position) {
         Recipe recipe = recipes.get(position);
         holder.title.setText(recipe.getName());
-        String meta = String.format(Locale.getDefault(), "%s • %d min", recipe.getCuisineType(), recipe.getCookingTime());
+        String cuisine = recipe.getCuisineType() == null || recipe.getCuisineType().isEmpty()
+                ? "Cuisine"
+                : recipe.getCuisineType();
+        String meta = String.format(Locale.getDefault(), "%s • %d min", cuisine, recipe.getCookingTime());
         holder.meta.setText(meta);
         holder.btnCook.setOnClickListener(v -> {
             if (cookClickListener != null) {

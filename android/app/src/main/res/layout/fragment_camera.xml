@@ -1,88 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/heading_secondary">
+    android:clipChildren="false"
+    android:clipToPadding="false">
 
-    <LinearLayout
+    <ImageView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="16dp"
-        android:background="@color/heading_primary"
-        android:gravity="center_vertical">
+        android:layout_height="match_parent"
+        android:contentDescription=""
+        android:scaleType="centerCrop"
+        android:src="@drawable/background" />
 
-        <TextView
-            android:id="@+id/cameraTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Detect Groceries"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="@color/white" />
-    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/earth_overlay" />
 
     <androidx.camera.view.PreviewView
         android:id="@+id/cameraPreview"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_height="match_parent" />
 
-    <FrameLayout
+    <ProgressBar
+        android:id="@+id/detectionProgress"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_height="match_parent"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:paddingStart="@dimen/space_12"
+        android:paddingTop="@dimen/space_8"
+        android:paddingEnd="@dimen/space_12"
+        android:paddingBottom="@dimen/space_12">
 
-        <ProgressBar
-            android:id="@+id/detectionProgress"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_gravity="center"
-            android:visibility="gone" />
+        <include
+            android:id="@+id/cameraTopBar"
+            layout="@layout/view_top_app_bar"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-    </FrameLayout>
-
-    <com.google.android.material.card.MaterialCardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        app:cardBackgroundColor="@color/card_background"
-        app:cardElevation="8dp"
-        app:cardCornerRadius="12dp"
-        xmlns:app="http://schemas.android.com/apk/res-auto">
-
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/statusText"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:layout_marginStart="@dimen/space_12"
+            android:layout_marginEnd="@dimen/space_12"
+            android:layout_marginBottom="@dimen/space_12"
+            android:background="@color/earth_overlay"
+            android:padding="@dimen/space_8"
+            android:text="Camera ready - point at groceries and tap Detect Items"
+            android:textColor="@color/earth_cream"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-            <Button
-                android:id="@+id/detectButton"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:text="DETECT ITEMS"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="@color/white"
-                android:background="@color/button_cta"
-                android:layout_marginBottom="12dp"
-                android:elevation="4dp"
-                app:cornerRadius="8dp" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <TextView
-                android:id="@+id/statusText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Camera ready - point at groceries and tap to detect"
-                android:textSize="12sp"
-                android:textColor="@color/text_body"
-                android:gravity="center"
-                android:lines="2" />
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/detectButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="96dp"
+        android:contentDescription="Detect Items"
+        android:elevation="8dp"
+        app:backgroundTint="@color/button_cta"
+        app:rippleColor="@color/earth_overlay"
+        app:srcCompat="@android:drawable/ic_menu_camera"
+        app:tint="@color/earth_cream" />
 
-        </LinearLayout>
-
-    </com.google.android.material.card.MaterialCardView>
-
-</LinearLayout>
+</FrameLayout>

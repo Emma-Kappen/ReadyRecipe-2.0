@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="Theme.ReadyRecipe" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <!-- Primary brand color (dark green). -->
-        <item name="colorPrimary">@color/heading_primary</item>
-        <item name="colorPrimaryVariant">@color/heading_secondary</item>
-        <item name="colorOnPrimary">@color/white</item>
-        <!-- Secondary / CTA color (dark orange). -->
-        <item name="colorSecondary">@color/button_cta</item>
+        <item name="colorPrimary">@color/earth_dark_brown</item>
+        <item name="colorPrimaryVariant">@color/earth_dark_brown</item>
+        <item name="colorOnPrimary">@color/earth_cream</item>
+        <item name="colorSecondary">@color/earth_dark_orange</item>
         <item name="colorOnSecondary">@color/white</item>
-        <!-- Text colors -->
-        <item name="android:textColorPrimary">@color/text_body</item>
-        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+        <item name="android:textColorPrimary">@color/earth_dark_brown</item>
+        <item name="android:statusBarColor">@color/earth_dark_brown</item>
     </style>
 </resources>

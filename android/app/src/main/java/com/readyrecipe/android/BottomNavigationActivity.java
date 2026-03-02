@@ -1,7 +1,11 @@
 package com.readyrecipe.android;
 
 import android.os.Bundle;
+import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.readyrecipe.android.ui.camera.CameraFragment;
@@ -17,7 +21,24 @@ public class BottomNavigationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bottom_navigation);
 
+        View root = findViewById(R.id.bottomNavRoot);
+        View navHost = findViewById(R.id.nav_host_fragment);
         bottomNavigationView = findViewById(R.id.bottomNavigation);
+
+        ViewCompat.setOnApplyWindowInsetsListener(root, (view, insets) -> {
+            Insets topInsets = insets.getInsets(WindowInsetsCompat.Type.statusBars() | WindowInsetsCompat.Type.displayCutout());
+            Insets bottomInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars());
+            navHost.setPadding(0, topInsets.top, 0, 0);
+            bottomNavigationView.setPadding(
+                    bottomNavigationView.getPaddingLeft(),
+                    bottomNavigationView.getPaddingTop(),
+                    bottomNavigationView.getPaddingRight(),
+                    bottomInsets.bottom
+            );
+            return insets;
+        });
+        ViewCompat.requestApplyInsets(root);
+
         bottomNavigationView.setOnItemSelectedListener(item -> {
             Fragment fragment;
             int itemId = item.getItemId();

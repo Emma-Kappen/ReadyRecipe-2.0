@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Widget.ReadyRecipe.Card" parent="Widget.MaterialComponents.CardView">
+        <item name="cardBackgroundColor">@color/earth_cream</item>
+        <item name="cardCornerRadius">@dimen/radius_standard</item>
+        <item name="cardElevation">@dimen/card_elevation</item>
+    </style>
+
+    <style name="Widget.ReadyRecipe.Button.Primary" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@color/earth_dark_orange</item>
+        <item name="android:textColor">@color/earth_cream</item>
+        <item name="cornerRadius">@dimen/radius_standard</item>
+        <item name="android:paddingLeft">@dimen/space_12</item>
+        <item name="android:paddingRight">@dimen/space_12</item>
+        <item name="android:minHeight">40dp</item>
+    </style>
+
+    <style name="Widget.ReadyRecipe.Button.Floating" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@color/earth_dark_orange</item>
+        <item name="android:textColor">@color/earth_cream</item>
+        <item name="cornerRadius">@dimen/radius_button_large</item>
+        <item name="android:minHeight">48dp</item>
+    </style>
+</resources>
